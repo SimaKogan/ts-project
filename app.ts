@@ -1,51 +1,22 @@
-const aCodeAscii: number = 'a'.charCodeAt(0);
-const zCodeAscii: number = 'z'.charCodeAt(0);
-const nEnglishLetters: number = zCodeAscii - aCodeAscii + 1;
- 
-function shiftCipher(str: string, shift: number = 1): string {
-    return cipherDecipher(str, shift, mapperCipher);
-}
-function shiftDecipher(str: string, shift: number = 1) : string {
-    return cipherDecipher(str, shift, mapperDecipher);
-}
-type MapperFunction = (symb: string, shift: number) => string;
-function cipherDecipher(str: string, shift: number,
-     mapperFun: MapperFunction): string {
-        //const arStr: string[] = Array.from(str);
-        const arStr: Array<string> = Array.from(str);
-        const arRes: Array<string> = arStr.map(symb => {
-            let res: string = symb;
-            if (symb <= 'z' && symb >= 'a') {
-                res = mapperFun(symb, shift);
-            }
-            return res;
-        })
-        return arRes.join('');
-     }
-     function mapperCipher(symb: string, shift: number) : string {
-        const actualShift: number = (symb.charCodeAt(0) - aCodeAscii + shift) % nEnglishLetters;
-        return String.fromCharCode(aCodeAscii + actualShift);
-     }
-     function mapperDecipher(symb: string, shift: number): string {
-        const actualShift: number = (zCodeAscii - symb.charCodeAt(0) + shift) % nEnglishLetters;
-        return String.fromCharCode(zCodeAscii - actualShift);
-     }
-     type TestObj = {
-        str: string,
-         shift?: number
-     }
-     function testCipherDecipher(data: Array<TestObj>,
-         testName: string): void{
-            console.log(`${"*".repeat(10)}${testName}${"*".repeat(10)}`)
-            const funForTest: MapperFunction
-             = testName === "cipherTest" ? shiftCipher : shiftDecipher;
-data.forEach((obj => console.log(`str=${obj.str}, shift=${obj.shift || 1} => ${funForTest(obj.str, obj.shift)}`))) 
-         }
-         const dataForCipherTest: Array<TestObj> = [
-            {str: "abc"}, {str: "abz", shift: 1000}
-         ];
-         testCipherDecipher(dataForCipherTest, "cipherTest");
-         const dataForDecipherTest: Array<TestObj> = [
-            {str: "bcd"}, {str: "mnl", shift: 1000}
-         ];
-         testCipherDecipher(dataForDecipherTest, "decipherTest");
+import { Company } from "./Company";
+import { Employee } from "./Employee"
+import { SalesPerson } from "./SalesPerson"
+import { WageEmployee } from "./WageEmployee"
+const employees: Array<Employee> = [new WageEmployee(123, "Vasya", 1970,
+ "Development", 10000, 100, 100), new WageEmployee(124, "Sara", 1975, "Management",
+  12000, 100, 100), new SalesPerson(125, "Abraham", 1980, "Sales", 11000, 100,
+   100, 10000, 1)];
+const company = new Company(employees);
+console.log(`salary budget is ${company.computeBudget()}`);
+const empl1 = new SalesPerson(127, "Victor",2000, "QA",10000, 100, 100,1000,1);
+const salary1 = empl1.computeSalary();
+company.addEmployee(empl1);
+console.log(`after adding new employee with salary ${salary1} the salary budget is ${company.computeBudget()} `)
+const empl2: Employee|null = company.getEmployee(125);
+// if (empl2) {
+//    const salary2 = empl2.computeSalary();
+// }
+//const salary2 = empl2!.computeSalary();//programmer knows for sure that null cannot be
+const salary2: number = empl2!.computeSalary();
+company.removeEmployee(125);
+console.log(`after removing  employee with salary ${salary2} the salary budget is ${company.computeBudget()} `)
